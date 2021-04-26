@@ -27,7 +27,9 @@ public class CurrencyExchangeController {
         CurrencyExchange currencyExchange = currencyExchangeRepository.findCurrencyExchangeByFromAndTo(from, to)
                 .orElseThrow(() -> new RuntimeException("Could not find currency exchange " + from + " to " + to));
         final String port = environment.getProperty("server.port");
-        currencyExchange.setEnvironment(port);
+        final String host = environment.getProperty("HOSTNAME");
+        final String version = "v21";
+        currencyExchange.setEnvironment(port + " " + version + " " + host);
         return currencyExchange;
     }
 }

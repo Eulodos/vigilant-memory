@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.aw.tutorial'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.21-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
@@ -20,11 +20,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
-    implementation 'org.springframework.amqp:spring-rabbit'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+//    implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+//    implementation 'org.springframework.amqp:spring-rabbit'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'io.github.resilience4j:resilience4j-spring-boot2'
     implementation'org.springframework.boot:spring-boot-starter-actuator'
     implementation'org.springframework.boot:spring-boot-starter-aop'
@@ -44,6 +44,6 @@ test {
 }
 
 bootBuildImage {
-    imageName = "${project.name}:${project.version}"
+    imageName = "eulodos/${project.name}:${project.version}"
     pullPolicy = "IF_NOT_PRESENT"
 }

@@ -1,5 +1,7 @@
 package com.example.currencyconversionservice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,8 @@ import java.util.Map;
 @RestController
 public class CurrencyConversionController {
 
+    private final Logger logger = LoggerFactory.getLogger(CurrencyConversionController.class);
+
     private final CurrencyExchangeProxy currencyExchangeProxy;
 
     public CurrencyConversionController(CurrencyExchangeProxy currencyExchangeProxy) {
@@ -22,6 +26,7 @@ public class CurrencyConversionController {
     public CurrencyConversion calculateCurrencyConversion(@PathVariable String from, @PathVariable String to,
                                                           @PathVariable BigDecimal qty) {
 
+        logger.info("calculateCurrencyConversion called with params: from {} to {}", from, to);
         final Map<String, String> uriVariables = Map.of("from", from, "to", to);
 
         final ResponseEntity<CurrencyConversion> responseEntity = new RestTemplate()
@@ -39,6 +44,8 @@ public class CurrencyConversionController {
     @GetMapping("/currency-conversion-feign/from/{from}/to/{to}/quantity/{qty}")
     public CurrencyConversion calculateCurrencyConversionFeign(@PathVariable String from, @PathVariable String to,
                                                                @PathVariable BigDecimal qty) {
+        logger.info("calculateCurrencyConversionFeign called with params: from {} to {}", from, to);
+
         final CurrencyConversion currencyConversion = currencyExchangeProxy.retrieveExchangeValue(from, to);
 
         return new CurrencyConversion(currencyConversion.getId(), from, to, currencyConversion.getEnvironment(),
