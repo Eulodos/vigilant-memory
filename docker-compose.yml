@@ -1,0 +1,83 @@
+version: '3.7'
+
+services: 
+    currency-exchange:
+        image: currency-exchange-service:0.0.1-SNAPSHOT
+        mem_limit: 700m
+        ports:
+            - "8000:8000"
+        networks: 
+            - currency-network
+        depends_on: 
+            - naming-server
+            - rabbitmq
+        environment: 
+            EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://naming-server:8761/eureka
+            SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+            SPRING.ZIPKIN.SENDER.TYPE: rabbit
+            RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+            SPRING_RABBITMQ_HOST: rabbitmq
+    currency-conversion:
+        image: currency-conversion-service:0.0.1-SNAPSHOT
+        mem_limit: 700m
+        ports:
+            - "8100:8100"
+        networks: 
+            - currency-network
+        depends_on: 
+            - naming-server
+            - rabbitmq
+        environment: 
+            EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://naming-server:8761/eureka
+            SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+            SPRING.ZIPKIN.SENDER.TYPE: rabbit
+            RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+            SPRING_RABBITMQ_HOST: rabbitmq
+    api-gateway:
+        image: api-gateway:0.0.1-SNAPSHOT
+        mem_limit: 700m
+        ports:
+            - "8765:8765"
+        networks: 
+            - currency-network
+        depends_on: 
+            - naming-server
+            - rabbitmq
+        environment: 
+            EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://naming-server:8761/eureka
+            SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+            SPRING.ZIPKIN.SENDER.TYPE: rabbit
+            RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+            SPRING_RABBITMQ_HOST: rabbitmq
+    naming-server:
+        image: naming-server:0.0.1-SNAPSHOT
+        mem_limit: 700m
+        ports: 
+            - "8761:8761"
+        networks: 
+            - currency-network
+    zipkin-server:
+        image: openzipkin/zipkin
+        mem_limit: 300m
+        ports: 
+            - "9411:9411"
+        networks: 
+            - currency-network
+        depends_on: 
+            - rabbitmq
+        environment: 
+            RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+        restart: always
+    rabbitmq:
+        image: rabbitmq:3.8-management
+        mem_limit: 300m
+        ports: 
+            - "5672:5672"
+            - "15672:15672"
+        networks: 
+            - currency-network
+        restart: always
+
+networks: 
+    currency-network:
+    
